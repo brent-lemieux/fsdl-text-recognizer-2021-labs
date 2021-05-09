@@ -8,6 +8,7 @@ import torch.nn.functional as F
 
 FC1_DIM = 1024
 FC2_DIM = 128
+DROPOUT = 0.5
 
 
 class MLP(nn.Module):
@@ -26,8 +27,9 @@ class MLP(nn.Module):
 
         fc1_dim = self.args.get("fc1", FC1_DIM)
         fc2_dim = self.args.get("fc2", FC2_DIM)
+        dropout = self.args.get("dropout", DROPOUT)
 
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(dropout)
         self.fc1 = nn.Linear(input_dim, fc1_dim)
         self.fc2 = nn.Linear(fc1_dim, fc2_dim)
         self.fc3 = nn.Linear(fc2_dim, num_classes)
@@ -45,6 +47,7 @@ class MLP(nn.Module):
 
     @staticmethod
     def add_to_argparse(parser):
-        parser.add_argument("--fc1", type=int, default=1024)
-        parser.add_argument("--fc2", type=int, default=128)
+        parser.add_argument("--fc1", type=int, default=FC1_DIM)
+        parser.add_argument("--fc2", type=int, default=FC2_DIM)
+        parser.add_argument("--dropout", type=float, default=DROPOUT)
         return parser
