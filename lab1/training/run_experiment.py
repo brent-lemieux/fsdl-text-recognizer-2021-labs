@@ -8,6 +8,7 @@ import pytorch_lightning as pl
 import wandb
 
 from text_recognizer import lit_models
+from text_recognizer import util
 
 
 # In order to ensure reproducible experiments, we must set random seeds.
@@ -41,6 +42,9 @@ def _setup_parser():
     temp_args, _ = parser.parse_known_args()
     data_class = _import_class(f"text_recognizer.data.{temp_args.data_class}")
     model_class = _import_class(f"text_recognizer.models.{temp_args.model_class}")
+
+    # For local code tests.
+    parser.add_argument("--just_print_model", type=util.str_to_bool, const=True, default=False, help="If True, don't train model, just print model class.")
 
     # Get data, model, and LitModel specific arguments
     data_group = parser.add_argument_group("Data Args")
@@ -79,6 +83,10 @@ def main():
         lit_model = lit_model_class.load_from_checkpoint(args.load_checkpoint, args=args, model=model)
     else:
         lit_model = lit_model_class(args=args, model=model)
+
+    if args.just_print_model:
+        print(lit_model.__dict__())
+        return
 
     logger = pl.loggers.TensorBoardLogger("training/logs")
 
