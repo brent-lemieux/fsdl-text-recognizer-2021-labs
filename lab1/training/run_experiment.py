@@ -85,7 +85,7 @@ def main():
         lit_model = lit_model_class(args=args, model=model)
 
     if args.just_print_model:
-        print(lit_model.__dict__())
+        print(lit_model.__dict__)
         return
 
     logger = pl.loggers.TensorBoardLogger("training/logs")
