@@ -44,7 +44,7 @@ def _setup_parser():
     model_class = _import_class(f"text_recognizer.models.{temp_args.model_class}")
 
     # For local code tests.
-    parser.add_argument("--just_print_model", type=util.str_to_bool, const=True, default=False, help="If True, don't train model, just print model class.")
+    parser.add_argument("--just_print_model", type=util.str_to_bool, const=True, nargs="?", default=False, help="If True, don't train model, just print model class.")
 
     # Get data, model, and LitModel specific arguments
     data_group = parser.add_argument_group("Data Args")
