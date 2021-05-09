@@ -29,23 +29,24 @@ class MLP(nn.Module):
 
         # fc1_dim = self.args.get("fc1", FC1_DIM)
         # fc2_dim = self.args.get("fc2", FC2_DIM)
-        hidden_dims = self.args.get("hidden_dims", HIDDEN_DIMS)
+        self.hidden_dims = self.args.get("hidden_dims", HIDDEN_DIMS)
         dropout = self.args.get("dropout", DROPOUT)
 
         self.dropout = nn.Dropout(dropout)
 
         # Set hidden layers.
-        self.fc_hidden =[nn.Linear(input_dim, hidden_dims[0])]
-        for i, n_neurons in enumerate(hidden_dims):
-            if i + 1 < len(hidden_dims):
-                fc = nn.Linear(n_neurons, hidden_dims[i+1])
-                self.fc_hidden.append(fc)
+        self.fc1 = nn.Linear(input_dim, hidden_dims[0])
+        for i, n_neurons in enumerate(self.hidden_dims):
+            if i + 1 < len(self.hidden_dims):
+                fc = nn.Linear(n_neurons, self.hidden_dims[i+1])
+                setattr(self, f"fc{i+2}")
         # Set output layer.
         self.output = nn.Linear(hidden_dims[-1], num_classes)
 
     def forward(self, x):
         x = torch.flatten(x, 1)
-        for fc in self.fc_hidden:
+        for i in range(len(self.hidden_dims)):
+            fc = getattr(self, f"fc{i+1}")
             x = fc(x)
             x = F.relu(x)
             x = self.dropout(x)
