@@ -44,7 +44,7 @@ class MLP(nn.Module):
 
     def forward(self, x):
         x = torch.flatten(x, 1)
-        for i, fc in self.layers[:-1]:
+        for i, fc in enumerate(self.layers[:-1]):
             x = fc(x)
             x = F.relu(x)
             x = self.dropout(x)
