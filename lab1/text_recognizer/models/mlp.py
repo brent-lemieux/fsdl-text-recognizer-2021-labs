@@ -48,7 +48,7 @@ class MLP(nn.Module):
             x = fc(x)
             x = F.relu(x)
             x = self.dropout(x)
-        output_layer = layers[-1]
+        output_layer = self.layers[-1]
         x = output_layer(x)
         return x
 
