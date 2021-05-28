@@ -74,8 +74,8 @@ class CNN(nn.Module):
         dropout = self.args.get("dropout", DROPOUT)
         stride = self.args.get("stride", STRIDE)
 
-        self.conv1 = ConvBlock(input_dims[0], conv_dim, stride=stride)
-        self.conv2 = ConvBlock(conv_dim, conv_dim, stride=stride)
+        self.conv1 = ConvBlock(input_dims[0], conv_dim, stride=stride, dilation=1)
+        self.conv2 = ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
         self.dropout = nn.Dropout(dropout)
         # self.max_pool = nn.MaxPool2d(2)
 
@@ -101,7 +101,7 @@ class CNN(nn.Module):
         assert H == W == IMAGE_SIZE
         x = self.conv1(x)
         x = self.conv2(x)
-        # x = self.max_pool(x)
+        x = self.max_pool(x)
         x = self.dropout(x)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
