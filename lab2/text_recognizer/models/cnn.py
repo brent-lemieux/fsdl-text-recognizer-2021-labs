@@ -77,7 +77,7 @@ class CNN(nn.Module):
         self.conv1 = ConvBlock(input_dims[0], conv_dim, stride=stride, dilation=1)
         self.conv2 = ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
         self.dropout = nn.Dropout(dropout)
-        # self.max_pool = nn.MaxPool2d(2)
+        self.max_pool = nn.MaxPool2d(2)
 
         # Because our 3x3 convs have padding size 1, they leave the input size unchanged.
         # The 2x2 max-pool divides the input size by 2. Flattening squares it.
