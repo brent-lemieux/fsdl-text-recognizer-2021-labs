@@ -110,12 +110,10 @@ class CNN(nn.Module):
         _B, _C, H, W = x.shape
         assert H == W == IMAGE_SIZE
         x = self.conv1(x)
-        print(x.shape)
         x = self.dropout(x)
         if self.extra_convs:
             for conv in self.extra_convs:
                 x = conv(x)
-                print(x.shape)
                 x = self.dropout(x)
         # x = self.conv2(x)
         # x = self.dropout(x)
