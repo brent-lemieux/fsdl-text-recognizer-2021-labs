@@ -89,6 +89,7 @@ class CNN(nn.Module):
         # Because our 3x3 convs have padding size 1, they leave the input size unchanged.
         # The 2x2 max-pool divides the input size by 2. Flattening squares it.
         conv_output_size = IMAGE_SIZE // (stride * 2)
+        print(conv_output_size)
         fc_input_dim = int(conv_output_size * conv_output_size * conv_dim)
         self.fc1 = nn.Linear(fc_input_dim, fc_dim)
         self.fc2 = nn.Linear(fc_dim, num_classes)
@@ -109,13 +110,11 @@ class CNN(nn.Module):
         x = self.conv1(x)
         print(x.shape)
         x = self.dropout(x)
-        print(x.shape)
         if self.extra_convs:
             for conv in self.extra_convs:
                 x = conv(x)
                 print(x.shape)
                 x = self.dropout(x)
-                print(x.shape)
         # x = self.conv2(x)
         # x = self.dropout(x)
         x = torch.flatten(x, 1)
