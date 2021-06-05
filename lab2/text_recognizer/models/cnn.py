@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
+N_CONVS = 3
 CONV_DIM = 64
 FC_DIM = 128
 IMAGE_SIZE = 28
@@ -70,12 +70,20 @@ class CNN(nn.Module):
         num_classes = len(data_config["mapping"])
 
         conv_dim = self.args.get("conv_dim", CONV_DIM)
+        n_convs = self.args.get("n_convs", N_CONVS)
         fc_dim = self.args.get("fc_dim", FC_DIM)
         dropout = self.args.get("dropout", DROPOUT)
         stride = self.args.get("stride", STRIDE)
 
         self.conv1 = ConvBlock(input_dims[0], conv_dim, stride=stride, dilation=1)
-        self.conv2 = ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
+        if n_convs > 1:
+            self.extra_convs = nn.ModuleList([
+                ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
+                for i in range(n_convs-1)
+            ])
+        else:
+            self.extra_convs = None
+        # self.conv2 = ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
         self.dropout = nn.Dropout(dropout)
 
         # Because our 3x3 convs have padding size 1, they leave the input size unchanged.
@@ -99,8 +107,13 @@ class CNN(nn.Module):
         _B, _C, H, W = x.shape
         assert H == W == IMAGE_SIZE
         x = self.conv1(x)
-        x = self.conv2(x)
         x = self.dropout(x)
+        if self.extra_convs:
+            for conv in self.extra_convs:
+                x = conv(x)
+                x = self.dropout(x)
+        # x = self.conv2(x)
+        # x = self.dropout(x)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         x = F.relu(x)
@@ -109,6 +122,9 @@ class CNN(nn.Module):
 
     @staticmethod
     def add_to_argparse(parser):
+        parser.add_argument("--n_convs", type=int, default=N_CONVS)
         parser.add_argument("--conv_dim", type=int, default=CONV_DIM)
         parser.add_argument("--fc_dim", type=int, default=FC_DIM)
+        parser.add_argument("--stride", type=int, default=STRIDE)
+        parser.add_argument("--dropout", type=float, default=DROPOUT)
         return parser
