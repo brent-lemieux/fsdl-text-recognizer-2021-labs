@@ -28,12 +28,12 @@ class ConvBlock(nn.Module):
 
         self.expansion = 1
         if stride > 1:
-          self.downsample = nn.Sequential(
-              nn.Conv2d(input_channels, output_channels * self.expansion, kernel_size=1, stride=stride),
-              nn.BatchNorm2d(output_channels * self.expansion),
-          )
+            self.downsample = nn.Sequential(
+                nn.Conv2d(input_channels, output_channels * self.expansion, kernel_size=1, stride=stride),
+                nn.BatchNorm2d(output_channels * self.expansion),
+            )
         else:
-          self.downsample = None
+            self.downsample = None
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -53,7 +53,7 @@ class ConvBlock(nn.Module):
         out = self.conv2(out)
         out = self.bn2(out)
         if self.downsample != None:
-          x = self.downsample(x)
+            x = self.downsample(x)
         out += x
         out = self.relu(out)
         return out
@@ -107,11 +107,15 @@ class CNN(nn.Module):
         _B, _C, H, W = x.shape
         assert H == W == IMAGE_SIZE
         x = self.conv1(x)
+        print(x.shape)
         x = self.dropout(x)
+        print(x.shape)
         if self.extra_convs:
             for conv in self.extra_convs:
                 x = conv(x)
+                print(x.shape)
                 x = self.dropout(x)
+                print(x.shape)
         # x = self.conv2(x)
         # x = self.dropout(x)
         x = torch.flatten(x, 1)
