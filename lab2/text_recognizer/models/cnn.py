@@ -72,13 +72,14 @@ class CNN(nn.Module):
         conv_dim = self.args.get("conv_dim", CONV_DIM)
         n_convs = self.args.get("n_convs", N_CONVS)
         fc_dim = self.args.get("fc_dim", FC_DIM)
+        kernel_size = self.args.get("kernel_size", KERNEL_SIZE)
         dropout = self.args.get("dropout", DROPOUT)
         stride = self.args.get("stride", STRIDE)
 
-        self.conv1 = ConvBlock(input_dims[0], conv_dim, stride=stride, dilation=1)
+        self.conv1 = ConvBlock(input_dims[0], conv_dim, kernel_size=kernel_size, stride=stride, dilation=1)
         if n_convs > 1:
             self.extra_convs = nn.ModuleList([
-                ConvBlock(conv_dim, conv_dim, stride=stride, dilation=1)
+                ConvBlock(conv_dim, conv_dim, kernel_size=kernel_size, stride=stride, dilation=1)
                 for i in range(n_convs-1)
             ])
         else:
@@ -88,9 +89,9 @@ class CNN(nn.Module):
 
         # Because our 3x3 convs have padding size 1, they leave the input size unchanged.
         # The 2x2 max-pool divides the input size by 2. Flattening squares it.
-        conv_output_size = IMAGE_SIZE // (stride * 2)
-        print(f"CONV OUTPUT SIZE: {conv_output_size}")
-        fc_input_dim = int(conv_output_size * conv_output_size * conv_dim)
+        # conv_output_size = IMAGE_SIZE // (stride * 2)
+        # print(f"CONV OUTPUT SIZE: {conv_output_size}")
+        fc_input_dim = 4 # int(conv_output_size * conv_output_size * conv_dim)
         self.fc1 = nn.Linear(fc_input_dim, fc_dim)
         self.fc2 = nn.Linear(fc_dim, num_classes)
 
