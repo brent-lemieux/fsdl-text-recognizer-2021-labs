@@ -22,8 +22,7 @@ class Accuracy(tm.Accuracy):
         Normalized preds are not necessary for accuracy computation as we just care about argmax().
         """
         print(preds.shape, target.shape)
-        if preds.min() < 0 or preds.max() > 1:
-            preds = torch.nn.functional.softmax(preds, dim=-1)
+        preds = torch.nn.functional.softmax(preds, dim=-1)
         super().update(preds=preds, target=target)
 
 
