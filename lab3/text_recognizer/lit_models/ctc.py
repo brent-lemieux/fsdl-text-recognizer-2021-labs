@@ -91,8 +91,8 @@ class CTCLitModel(BaseLitModel):  # pylint: disable=too-many-ancestors
         self.log("val_loss", loss, prog_bar=True)
 
         decoded = self.greedy_decode(logprobs, max_length=y.shape[1])
-        self.val_acc(decoded, y)
-        self.log("val_acc", self.val_acc, on_step=False, on_epoch=True)
+        # self.val_acc(decoded, y)
+        # self.log("val_acc", self.val_acc, on_step=False, on_epoch=True)
         self.val_cer(decoded, y)
         self.log("val_cer", self.val_cer, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -101,8 +101,8 @@ class CTCLitModel(BaseLitModel):  # pylint: disable=too-many-ancestors
         logits = self(x)
         logprobs = torch.log_softmax(logits, dim=1)
         decoded = self.greedy_decode(logprobs, max_length=y.shape[1])
-        self.test_acc(decoded, y)
-        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
+        # self.test_acc(decoded, y)
+        # self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
         self.test_cer(decoded, y)
         self.log("test_cer", self.test_cer, on_step=False, on_epoch=True, prog_bar=True)
 
