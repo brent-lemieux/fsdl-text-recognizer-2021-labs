@@ -79,6 +79,7 @@ class CTCLitModel(BaseLitModel):  # pylint: disable=too-many-ancestors
 
     def validation_step(self, batch, batch_idx):  # pylint: disable=unused-argument
         x, y = batch
+        y = y.long()
         logits = self(x)
         logprobs = torch.log_softmax(logits, dim=1)
         B, _C, S = logprobs.shape
