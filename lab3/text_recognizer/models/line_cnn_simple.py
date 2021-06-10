@@ -62,7 +62,6 @@ class LineCNNSimple(nn.Module):
             # S might not match ground truth, so let's only take enough activations as are expected
             activations = activations[:, :, : self.output_length]
 
-        print(activations)
         return activations
 
     @staticmethod
