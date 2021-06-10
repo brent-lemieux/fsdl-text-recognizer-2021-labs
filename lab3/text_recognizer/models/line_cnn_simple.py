@@ -61,6 +61,8 @@ class LineCNNSimple(nn.Module):
         if self.limit_output_length:
             # S might not match ground truth, so let's only take enough activations as are expected
             activations = activations[:, :, : self.output_length]
+
+        print(activations)
         return activations
 
     @staticmethod
